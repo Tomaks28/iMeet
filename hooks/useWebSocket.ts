@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const useWebSocket = (
   url = "localhost:8080",
-  reconnectionTimeMs = 2000,
+  reconnectionTimeMs = 10000,
   debug = true
 ) => {
   const [timeoutHandler, setTimeoutHandler] = useState(0);
@@ -11,7 +11,7 @@ const useWebSocket = (
   const [status, setStatus] = useState<"OPEN" | "CLOSE">("CLOSE");
   const [messages, setMessages] = useState([]);
 
-  const onSend = (message: string) => {
+  const _onSend = (message: string) => {
     if (ws) {
       ws.send(message);
     }
@@ -54,7 +54,7 @@ const useWebSocket = (
     };
   }, [mode]);
 
-  return { status, onMessage: messages, onSend };
+  return { status, onMessage: messages, ws };
 };
 
 export default useWebSocket;

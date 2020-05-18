@@ -1,7 +1,9 @@
-import React, { useReducer, createContext } from "react";
+import React, { useReducer } from "react";
 import { StyleSheet, StatusBar } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { themes, initialStore, reducer, StoreContext } from "./store";
 import { NavigationContainer } from "@react-navigation/native";
+import { RealTimeManager } from "./services";
 
 import {
   HomeScreen,
@@ -17,14 +19,16 @@ import {
   SignUpScreen,
   ChatScreen,
 } from "./containers";
-import { useStore } from "./hooks";
-import { themes } from "./store";
 
 const Drawer = createDrawerNavigator();
-export const StoreContext = createContext({});
 
 const App = () => {
-  const { store, dispatch } = useStore();
+  // Global State Management
+  const [store, dispatch] = useReducer(reducer, initialStore);
+
+  // Real Time WebSocket Manager
+  RealTimeManager(store, dispatch);
+
   return (
     <StoreContext.Provider value={{ store, dispatch }}>
       <NavigationContainer>

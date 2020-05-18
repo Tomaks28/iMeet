@@ -1,12 +1,17 @@
 export type MessageStatusType = "pending" | "sent" | "received" | "red";
 export type HeaderType = "normal" | "back" | "hide";
 export type ActionType =
-  | "reset"
-  | "setOnline"
-  | "setOffline"
-  | "getMessages"
-  | "setMessages";
-export type StoreActionType = { type: ActionType; payload: any };
+  | "RESET"
+  | "SET_ONLINE"
+  | "SET_OFFLINE"
+  | "GET_MESSAGES"
+  | "SET_MESSAGES"
+  | "WS_SEND";
+
+export interface StoreActionType {
+  type: ActionType;
+  payload?: any;
+}
 
 export interface Message {
   from: string;
@@ -18,4 +23,5 @@ export interface Message {
 export interface Store {
   connectionStatus: boolean;
   messages: Message[] | null;
+  webSocketRef: WebSocket | null;
 }

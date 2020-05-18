@@ -6,6 +6,7 @@ const themes = {
   unreadBg: "#fff0fa",
   darkFont: "#1B0806",
   dividerColor: "lightgrey",
+  chatInputHeight: 60,
   bubbleHeight: 10,
   bubbleMaxWidth: "85%",
   bubbleRadius: 20,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -16,13 +16,18 @@ import { themes } from "../store";
 import { useKeyboardHeight } from "../hooks";
 
 import { BubbleList } from "../test";
+import { StoreContext } from "../store";
 
 // const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-const INPUT_HEIGHT = 60;
 
 const DiscussionScreen = (props: any) => {
   const { keyboardHeight, shown } = useKeyboardHeight();
-  const chatHeight = new Animated.Value(Dimensions.get("window").height);
+  const [message, setMessage] = useState("");
+  // const chatHeight = new Animated.Value(Dimensions.get("window").height);
+  const {
+    store: { webSocketRef },
+    dispatch,
+  } = useContext(StoreContext);
 
   return (
     <View style={{ flex: 1 }}>
@@ -37,7 +42,9 @@ const DiscussionScreen = (props: any) => {
           renderItem={({ item }) => item.component}
           contentContainerStyle={{
             paddingTop:
-              Platform.OS === "ios" ? INPUT_HEIGHT * 4 : INPUT_HEIGHT * 5,
+              Platform.OS === "ios"
+                ? themes.chatInputHeight * 4
+                : themes.chatInputHeight * 5,
           }}
         />
       </KeyboardAvoidingView>
@@ -45,18 +52,23 @@ const DiscussionScreen = (props: any) => {
       <KeyboardAvoidingView
         style={styles.avoidingView}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={INPUT_HEIGHT * 2.2}
+        keyboardVerticalOffset={themes.chatInputHeight * 2.2}
       >
         <View style={styles.inputSection}>
           <TextInput
+            value={message}
             style={styles.input}
             placeholder="Message..."
             // multiline
             returnKeyType="send"
+            onChangeText={(value) => {
+              setMessage(value);
+            }}
           />
           <TouchableOpacity
             onPress={() => {
-              console.log("send message");
+              webSocketRef && message && webSocketRef.send(message);
+              setMessage("");
             }}
           >
             <Ionicons name="md-send" size={32} color={themes.primaryColor} />
@@ -78,7 +90,7 @@ const styles = StyleSheet.create({
   },
   avoidingView: { position: "absolute", bottom: 0, left: 0, right: 0 },
   inputSection: {
-    height: INPUT_HEIGHT,
+    height: themes.chatInputHeight,
     backgroundColor: "white",
     justifyContent: "space-between",
     alignItems: "center",

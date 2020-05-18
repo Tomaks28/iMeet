@@ -3,14 +3,16 @@ import { StoreActionType, Store } from "../interfaces";
 
 const reducer = (state: Store, action: StoreActionType) => {
   switch (action.type) {
-    case "reset":
+    case "RESET":
       return initialStore;
-    case "setOnline":
+    case "SET_ONLINE":
       return { ...state, connectionStatus: true };
-    case "setOffline":
+    case "SET_OFFLINE":
       return { ...state, connectionStatus: false };
-    case "setMessages":
+    case "SET_MESSAGES":
       return { ...state, messages: action.payload };
+    case "WS_SEND":
+      return { ...state, onSend: action.payload };
     default:
       return state;
   }
