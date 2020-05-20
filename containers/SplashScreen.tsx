@@ -1,22 +1,23 @@
-import React, { useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
-  Text,
   ActivityIndicator,
   AsyncStorage,
   Image,
   BackHandler,
 } from "react-native";
 import axios from "axios";
-import { useTimer } from "../hooks";
 import { StoreContext, images } from "../store";
+import { Alert } from "../components";
 
 interface Props {
   navigation: any;
 }
 
 const SplashScreen = ({ navigation }: Props) => {
-  const { store } = useContext(StoreContext);
+  const [modal, setModal] = useState({ show: false, text: "" });
+  const { store, dispatch } = useContext(StoreContext);
+
   useEffect(() => {
     (async function () {
       try {
@@ -26,31 +27,41 @@ const SplashScreen = ({ navigation }: Props) => {
             .get(store.serverUrl + "user", {
               headers: { Authorization: `Bearer ${token}` },
             })
-            .then(({ data }) => {
-              console.log("sucess");
+            .then(async ({ data }) => {
+              const { email, token, username } = data;
+              await AsyncStorage.setItem("email", email);
+              dispatch({
+                type: "USER_INFO",
+                payload: {
+                  email,
+                  token,
+                  username,
+                },
+              });
               navigation.navigate("HomeScreen");
             })
             .catch((error) => {
-              console.log(error);
               navigation.navigate("SignInScreen");
             });
         } else {
           navigation.navigate("SignInScreen");
         }
       } catch (err) {
-        alert("Server Error");
-        BackHandler.exitApp();
+        setModal({ show: true, text: err.message });
+        // BackHandler.exitApp();
       }
     })();
   }, []);
-
-  // if (useTimer(1000)) {
-  // }
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Image source={images.logo} />
       <ActivityIndicator />
+      <Alert
+        show={modal.show}
+        text={modal.text}
+        onPress={() => setModal({ show: false, text: "" })}
+      />
     </View>
   );
 };

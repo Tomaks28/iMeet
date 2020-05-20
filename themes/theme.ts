@@ -21,6 +21,10 @@ const themes = {
   bubbleStatusSize: 14,
   bubbleStatusUnread: "lightgrey",
   bubbleStatusRead: "gold",
+  errorEmailMessage: "Adresse email incorrect",
+  errorPasswordMessage:
+    "1 caractère spécial, 1 chiffre, une lettre et compris entre 7-15 caractères",
+  errorMatchMessage: "Les mots de passe ne correspondent pas",
 };
 
 export default themes;

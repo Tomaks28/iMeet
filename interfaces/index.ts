@@ -2,8 +2,10 @@ export type MessageStatusType = "pending" | "sent" | "received" | "red";
 export type HeaderType = "normal" | "back" | "strict-back" | "hide";
 export type ActionType =
   | "RESET"
+  | "USER_INFO"
   | "SET_ONLINE"
   | "SET_USERNAME"
+  | "SET_TOKEN"
   | "SET_OFFLINE"
   | "GET_MESSAGES"
   | "SET_MESSAGES"
@@ -28,6 +30,7 @@ export interface Store {
   connectionStatus: boolean;
   token: string;
   username: string;
+  email: string;
   messages: Message[] | null;
   webSocketRef: WebSocket | null;
 }

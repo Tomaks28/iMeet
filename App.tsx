@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import { StyleSheet, StatusBar } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { themes, initialStore, reducer, StoreContext } from "./store";
@@ -18,6 +18,7 @@ import {
   SignInScreen,
   SignUpScreen,
   ChatScreen,
+  RecoveryScreen,
 } from "./containers";
 
 const Drawer = createDrawerNavigator();
@@ -27,7 +28,7 @@ const App = () => {
   const [store, dispatch] = useReducer(reducer, initialStore);
 
   // Real Time WebSocket Manager
-  RealTimeManager(store, dispatch);
+  // RealTimeManager(store, dispatch);
 
   return (
     <StoreContext.Provider value={{ store, dispatch }}>
@@ -43,6 +44,7 @@ const App = () => {
           <Drawer.Screen name="SplashScreen" component={SplashScreen} />
           <Drawer.Screen name="SignInScreen" component={SignInScreen} />
           <Drawer.Screen name="SignUpScreen" component={SignUpScreen} />
+          <Drawer.Screen name="RecoveryScreen" component={RecoveryScreen} />
           <Drawer.Screen name="HomeScreen" component={HomeScreen} />
           <Drawer.Screen name="ProfileScreen" component={ProfileScreen} />
           <Drawer.Screen name="DiscoverScreen" component={DiscoverScreen} />

@@ -1,7 +1,7 @@
-import themes from "./theme";
-import images from "./images";
-import header from "./header";
-import { reducer } from "./store";
+import themes from "../themes/theme";
+import images from "../themes/images";
+import header from "../themes/header";
+import reducer from "./reducer";
 import initialStore from "./initialStore";
 import StoreContext from "./storeContext";
 

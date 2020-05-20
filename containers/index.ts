@@ -11,6 +11,7 @@ import AroundmeScreen from "./AroundmeScreen";
 import SignInScreen from "./SignInScreen";
 import SignUpScreen from "./SignUpScreen";
 import DiscussionScreen from "./DiscussionScreen";
+import RecoveryScreen from "./RecoveryScreen";
 
 export {
   HomeScreen,
@@ -26,4 +27,5 @@ export {
   SignInScreen,
   SignUpScreen,
   DiscussionScreen,
+  RecoveryScreen,
 };

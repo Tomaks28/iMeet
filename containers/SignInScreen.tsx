@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   ScrollView,
   Platform,
+  AsyncStorage,
+  BackHandler,
 } from "react-native";
+import axios from "axios";
 import * as Facebook from "expo-facebook";
 import Constants from "expo-constants";
 import { Text } from "react-native-elements";
@@ -15,7 +18,7 @@ import { checkEmailFormat, checkPasswordFormat } from "../utilities";
 
 import { Api_signIn, Api_facebookLogin } from "../services/Api";
 
-import { InputTextField, Button } from "../components";
+import { InputTextField, Button, Alert } from "../components";
 import { SocialButton } from "../components";
 
 interface Login {
@@ -25,6 +28,7 @@ interface Login {
 
 const SignInScreen = (props: any) => {
   const context = useContext(StoreContext);
+  const [modal, setModal] = useState({ show: false, text: "" });
   const [login, setLogin] = useState({
     email: "",
     password: "",
@@ -33,6 +37,16 @@ const SignInScreen = (props: any) => {
     passwordErrorMessage: "",
   });
 
+  // Retrieve user info from mobile memory
+  useEffect(() => {
+    (async function () {
+      const email = await AsyncStorage.getItem("email");
+      if (email) {
+        setLogin({ ...login, email });
+      }
+    })();
+  }, []);
+
   const handleLogin = (value: string) => {
     if (checkEmailFormat(value)) {
       setLogin({ ...login, email: value, emailErrorMessage: "" });
@@ -40,7 +54,7 @@ const SignInScreen = (props: any) => {
       setLogin({
         ...login,
         email: value,
-        emailErrorMessage: "Adresse email incorrect",
+        emailErrorMessage: themes.errorEmailMessage,
       });
     }
   };
@@ -52,8 +66,7 @@ const SignInScreen = (props: any) => {
       setLogin({
         ...login,
         password: value,
-        passwordErrorMessage:
-          "1 caractère spécial, 1 chiffre, une lettre et compris entre 7-15 caractères",
+        passwordErrorMessage: themes.errorPasswordMessage,
       });
     }
   };
@@ -67,8 +80,27 @@ const SignInScreen = (props: any) => {
   const handleConnection = (login: Login) => {
     //   Check if email and password format are correct
     if (checkEmailFormat(login.email) && checkPasswordFormat(login.password)) {
+      axios
+        .post(context.store.serverUrl + "user/signin", {
+          email: login.email,
+          password: login.password,
+        })
+        .then(async ({ data }) => {
+          await AsyncStorage.setItem("token", data.token);
+          context.dispatch({ type: "SET_TOKEN", payload: data.token });
+          context.dispatch({ type: "SET_USERNAME", payload: data.username });
+          props.navigation.navigate("HomeScreen");
+        })
+        .catch((error) => {
+          setModal({ show: true, text: error.response.data.message });
+          // BackHandler.exitApp();
+        });
       //   const token = Api_SignIn();
     } else {
+      setModal({
+        show: true,
+        text: "Saisissez vos identifiants",
+      });
     }
   };
 
@@ -110,6 +142,7 @@ const SignInScreen = (props: any) => {
         </View>
 
         <InputTextField
+          value={login.email}
           title="Email"
           icon="mail"
           onTextChange={(email: string) => handleLogin(email)}
@@ -125,7 +158,7 @@ const SignInScreen = (props: any) => {
         />
 
         <TouchableOpacity
-          onPress={() => props.navigation.navigate("AccountRecoveryScreen")}
+          onPress={() => props.navigation.navigate("RecoveryScreen")}
         >
           <Text style={[styles.text, styles.link, { textAlign: "right" }]}>
             Mot de passe oublié?
@@ -167,6 +200,11 @@ const SignInScreen = (props: any) => {
         <SocialButton type="facebook" onPress={connectFacebook} />
         <SocialButton type="google" onPress={connectGoogle} />
       </View>
+      <Alert
+        show={modal.show}
+        text={modal.text}
+        onPress={() => setModal({ show: false, text: "" })}
+      />
     </ScrollView>
   );
 };

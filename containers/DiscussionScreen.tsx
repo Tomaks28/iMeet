@@ -21,7 +21,7 @@ import { StoreContext } from "../store";
 // const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const DiscussionScreen = (props: any) => {
-  const keyboardHeight = useKeyboardHeight();
+  const { height } = useKeyboardHeight();
   const [message, setMessage] = useState("");
   // const chatHeight = new Animated.Value(Dimensions.get("window").height);
   const {
@@ -36,7 +36,7 @@ const DiscussionScreen = (props: any) => {
       >
         <FlatList
           inverted
-          style={{ height: keyboardHeight }}
+          style={{ height: height }}
           data={BubbleList}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => item.component}

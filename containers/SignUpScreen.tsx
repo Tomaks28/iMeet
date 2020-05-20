@@ -1,22 +1,16 @@
 import React, { useState, useContext, useRef } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
-  Platform,
-  Image,
-  KeyboardAvoidingView,
-} from "react-native";
-import Constants from "expo-constants";
+import { View, StyleSheet, Image, AsyncStorage } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { themes, header, images } from "../store";
-import { HeaderComponent, InputTextField, Button } from "../components";
+import { themes, images, StoreContext } from "../store";
+import { HeaderComponent, InputTextField, Button, Alert } from "../components";
 import { checkEmailFormat, checkPasswordFormat } from "../utilities";
+import Axios from "axios";
+import { getCacheData } from "../utilities/__getCacheData";
 
 const SignUpScreen = (props: any) => {
-  const ref = useRef<any>(null);
-
+  // const ref = useRef<any>(null);
+  const { store, dispatch } = useContext(StoreContext);
+  const [modal, setModal] = useState({ show: false, text: "" });
   const [login, setLogin] = useState({
     username: "",
     email: "",
@@ -29,7 +23,7 @@ const SignUpScreen = (props: any) => {
     passwordMatchErrorMessage: "",
   });
 
-  const handleLogin = () => {
+  const handleSignUp = async () => {
     if (
       login.username &&
       checkEmailFormat(login.email) &&
@@ -37,7 +31,110 @@ const SignUpScreen = (props: any) => {
       checkPasswordFormat(login.password2) &&
       login.password1 === login.password2
     ) {
-      console.log("login");
+      const { username, email, password1 } = login;
+      // console.log(new Date(), getCacheData());
+      // getCacheData();
+      Axios.post(store.serverUrl + "user/signup", {
+        username,
+        email,
+        password: password1,
+      })
+        .then(async ({ data }) => {
+          await AsyncStorage.setItem("email", data.email);
+          await AsyncStorage.setItem("username", data.username);
+          await AsyncStorage.setItem("token", data.token);
+          dispatch({
+            type: "USER_INFO",
+            payload: {
+              email: data.email,
+              token: data.token,
+              username: data.username,
+            },
+          });
+          props.navigation.navigate("HomeScreen");
+        })
+        .catch((error) => {
+          setModal({ show: true, text: error.response.data.message });
+        });
+    }
+  };
+
+  const handleUsername = (username: string) => {
+    setLogin({ ...login, username });
+  };
+
+  const handleEmail = (email: string) => {
+    if (checkEmailFormat(email)) {
+      setLogin({ ...login, email, emailErrorMessage: "" });
+    } else {
+      setLogin({
+        ...login,
+        email,
+        emailErrorMessage: themes.errorEmailMessage,
+      });
+    }
+  };
+
+  const handlePassword = (password: string) => {
+    // let temp = { ...login };
+    // console.log(new Date(), temp);
+    // if (password) {
+    //   temp.password1 = password;
+    // } else {
+    //   temp.password1 = "";
+    //   temp.passwordErrorMessage = "";
+    // }
+    // if (checkPasswordFormat(password) && password) {
+    //   temp.passwordErrorMessage = "";
+    // } else {
+    //   temp.passwordErrorMessage = themes.errorPasswordMessage;
+    // }
+    // if (password === temp.password2) {
+    //   temp.passwordMatchErrorMessage = "";
+    // } else {
+    //   temp.passwordMatchErrorMessage = themes.errorMatchMessage;
+    // }
+    setLogin((prev) => {
+      if (password) {
+        prev.password1 = password;
+        if (checkPasswordFormat(password)) {
+          prev.passwordErrorMessage = "";
+        } else {
+          prev.passwordErrorMessage = themes.errorPasswordMessage;
+        }
+      } else {
+        prev.password1 = "";
+        prev.passwordErrorMessage = "";
+      }
+      if (password === prev.password2) {
+        prev.passwordMatchErrorMessage = "";
+      } else {
+        prev.passwordMatchErrorMessage = themes.errorMatchMessage;
+      }
+      // return { ...prev };
+      return prev;
+    });
+  };
+
+  const handlePasswordMatch = (password: string) => {
+    if (password && login.password1 === password) {
+      setLogin({
+        ...login,
+        password2: password,
+        passwordMatchErrorMessage: "",
+      });
+    } else if (password) {
+      setLogin({
+        ...login,
+        password2: password,
+        passwordMatchErrorMessage: themes.errorMatchMessage,
+      });
+    } else {
+      setLogin({
+        ...login,
+        password2: "",
+        passwordMatchErrorMessage: "",
+      });
     }
   };
 
@@ -54,39 +151,53 @@ const SignUpScreen = (props: any) => {
         style={styles.container}
       >
         <InputTextField
+          value={login.username}
           title="Username"
           icon="account-circle"
-          onTextChange={() => {}}
-          // valueChanged={(email: string) => handleLogin(email)}
-          // errorMessage={login.emailErrorMessage}
-        />
-        <InputTextField
-          title="Email"
-          icon="mail"
-          onTextChange={() => {}}
-          // valueChanged={(email: string) => handleLogin(email)}
-          // errorMessage={login.emailErrorMessage}
-        />
-        <InputTextField
-          title="Password"
-          icon="lock"
-          onTextChange={() => {}}
-          // valueChanged={(email: string) => handleLogin(email)}
-          // errorMessage={login.emailErrorMessage}
-        />
-        <InputTextField
-          title="Password"
-          icon="lock"
-          onTextChange={() => {}}
-          onFocus={() => {
-            console.log("focus");
-            // ref.current.scroll.scrollToEnd();
+          onTextChange={(username) => {
+            handleUsername(username);
           }}
           // valueChanged={(email: string) => handleLogin(email)}
           // errorMessage={login.emailErrorMessage}
         />
-
-        <Button text="Créer mon compte" onPress={handleLogin} />
+        <InputTextField
+          value={login.email}
+          title="Email"
+          icon="mail"
+          onTextChange={(email: string) => handleEmail(email)}
+          errorMessage={login.emailErrorMessage}
+        />
+        <InputTextField
+          value={login.password1}
+          title="Password"
+          icon="lock"
+          onTextChange={(password) => {
+            handlePassword(password);
+          }}
+          errorMessage={login.passwordErrorMessage}
+          hidden={login.isHidden1}
+          setHidden={() => setLogin({ ...login, isHidden1: !login.isHidden1 })}
+        />
+        <InputTextField
+          value={login.password2}
+          title="Password"
+          icon="lock"
+          onTextChange={(password) => {
+            handlePasswordMatch(password);
+          }}
+          errorMessage={login.passwordMatchErrorMessage}
+          hidden={login.isHidden2}
+          setHidden={() => setLogin({ ...login, isHidden2: !login.isHidden2 })}
+          // onFocus={() => {
+          //   // ref.current.scroll.scrollToEnd();
+          // }}
+        />
+        <Button text="Créer mon compte" onPress={handleSignUp} />
+        <Alert
+          show={modal.show}
+          text={modal.text}
+          onPress={() => setModal({ show: false, text: "" })}
+        />
       </KeyboardAwareScrollView>
     </View>
   );

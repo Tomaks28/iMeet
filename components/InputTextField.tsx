@@ -5,6 +5,7 @@ import { Entypo } from "@expo/vector-icons";
 import { themes } from "../store";
 
 interface Props {
+  value?: string;
   title: string;
   icon: string;
   onTextChange: (value: string) => void;
@@ -18,6 +19,7 @@ interface Props {
 const InputTextField = (props: Props) => {
   return (
     <Input
+      value={props.value}
       secureTextEntry={props.hidden}
       autoCapitalize="none"
       onFocus={() => {

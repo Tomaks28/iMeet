@@ -7,6 +7,7 @@ const initialStore: Store = {
   connectionStatus: false,
   token: "",
   username: "",
+  email: "",
   messages: null,
   webSocketRef: null,
 };
