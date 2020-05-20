@@ -79,12 +79,12 @@ const styles = StyleSheet.create({
     fontSize: themes.bubbleTextFontSize,
   },
   timeRightComponent: {
-    color: themes.lightColor,
+    color: themes.colorLight,
     fontSize: themes.bubbleTimeSize,
     marginRight: 5,
   },
   timeLeftComponent: {
-    color: themes.greyColor,
+    color: themes.colorGrey,
     fontSize: themes.bubbleTimeSize,
     alignSelf: "flex-end",
   },

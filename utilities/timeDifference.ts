@@ -1,4 +1,4 @@
-export default function timeDifference(previous: number) {
+export const timeDifference = (previous: number) => {
   const msPerMinute = 60 * 1000;
   const msPerHour = msPerMinute * 60;
   const msPerDay = msPerHour * 24;
@@ -23,4 +23,4 @@ export default function timeDifference(previous: number) {
   } else {
     return "Il y'a " + +Math.round(elapsed / msPerYear) + " années";
   }
-}
+};

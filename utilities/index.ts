@@ -1,3 +1,3 @@
-import timeDifference from "./timeDifference";
-
-export { timeDifference };
+export * from "./timeDifference";
+export * from "./checkEmailFormat";
+export * from "./checkPasswordFormat";

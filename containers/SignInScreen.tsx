@@ -5,17 +5,18 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
+  Platform,
 } from "react-native";
 import * as Facebook from "expo-facebook";
 import Constants from "expo-constants";
 import { Text } from "react-native-elements";
-import { themes } from "../store";
+import { themes, header, images, StoreContext } from "../store";
+import { checkEmailFormat, checkPasswordFormat } from "../utilities";
 
 import { Api_signIn, Api_facebookLogin } from "../services/Api";
 
-import InputTextField from "../components/InputTextField";
-import SocialButton from "../components/SocialButton";
+import { InputTextField, Button } from "../components";
+import { SocialButton } from "../components";
 
 interface Login {
   email: string;
@@ -23,6 +24,7 @@ interface Login {
 }
 
 const SignInScreen = (props: any) => {
+  const context = useContext(StoreContext);
   const [login, setLogin] = useState({
     email: "",
     password: "",
@@ -43,17 +45,6 @@ const SignInScreen = (props: any) => {
     }
   };
 
-  const checkEmailFormat = (email: string) => {
-    if (
-      email !== "" &&
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-
   const handlePassword = (value: string) => {
     if (checkPasswordFormat(value)) {
       setLogin({ ...login, password: value, passwordErrorMessage: "" });
@@ -64,16 +55,6 @@ const SignInScreen = (props: any) => {
         passwordErrorMessage:
           "1 caractère spécial, 1 chiffre, une lettre et compris entre 7-15 caractères",
       });
-    }
-  };
-
-  //   To check a password between 7 to 15 characters which contain at least one numeric digit and a special character
-  const checkPasswordFormat = (password: string) => {
-    var paswd = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
-    if (password.match(paswd)) {
-      return true;
-    } else {
-      return false;
     }
   };
 
@@ -94,7 +75,7 @@ const SignInScreen = (props: any) => {
   // function called when facebook connection button is pressed
   const connectFacebook = async () => {
     try {
-      await Facebook.initializeAsync("1234567890"); //TODO Facebook ID
+      await Facebook.initializeAsync(context.store.facebookAppID);
       const {
         type,
         token,
@@ -124,30 +105,20 @@ const SignInScreen = (props: any) => {
   return (
     <ScrollView style={styles.container}>
       <View>
-        <View
-          style={{
-            paddingTop: Constants.statusBarHeight,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Image
-            style={{ height: 150, width: 150 }}
-            source={require("../assets/logo/logo.jpg")}
-          />
-          <Text style={[styles.text, styles.title]}>iMeet</Text>
+        <View style={styles.header}>
+          <Image style={styles.logo} source={images.logo} />
         </View>
 
         <InputTextField
           title="Email"
           icon="mail"
-          valueChanged={(email: string) => handleLogin(email)}
+          onTextChange={(email: string) => handleLogin(email)}
           errorMessage={login.emailErrorMessage}
         />
         <InputTextField
           title="Mot de passe"
           icon="lock"
-          valueChanged={(password: string) => handlePassword(password)}
+          onTextChange={(password: string) => handlePassword(password)}
           errorMessage={login.passwordErrorMessage}
           hidden={login.isHidden}
           setHidden={handleChangeHidden}
@@ -161,13 +132,12 @@ const SignInScreen = (props: any) => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.submitContainer}
-          // onPress={() => handleConnection(login)}//TODO
-          onPress={() => props.navigation.navigate("HomeScreen")}
-        >
-          <Text style={[styles.text, styles.connectText]}>Se connecter</Text>
-        </TouchableOpacity>
+        <Button
+          text="Se connecter"
+          onPress={() => {
+            handleConnection(login);
+          }}
+        />
 
         <View style={[styles.socialContainer, { marginTop: 24 }]}>
           <Text style={[styles.text, styles.signupQuestion]}>
@@ -207,23 +177,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: "100%",
-    paddingBottom: 10,
     backgroundColor: "white",
     paddingHorizontal: 30,
   },
-  title: {
-    marginTop: "5%",
-    fontSize: 22,
-    fontWeight: "500",
-    marginBottom: "5%",
+  header: {
+    paddingTop:
+      Platform.OS === "ios" ? Constants.statusBarHeight : header.paddingTop,
+
+    paddingBottom: 20,
+  },
+  logo: {
+    height: 150,
+    width: 150,
+    alignSelf: "center",
   },
   text: {
-    color: "#1D2029",
+    color: themes.colorPrimary,
   },
   signupQuestion: {
     fontSize: 14,
     color: "#ABB4BD",
     textAlign: "center",
+    marginRight: 10,
   },
   socialContainer: {
     flexDirection: "row",
@@ -232,29 +207,9 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 10,
   },
-  connectText: {
-    color: "#FFF",
-    fontWeight: "600",
-    fontSize: 16,
-  },
   link: {
-    color: themes.primaryColor,
+    color: themes.colorPrimary,
     fontSize: 14,
     fontWeight: "500",
-  },
-  submitContainer: {
-    backgroundColor: themes.primaryColor,
-    fontSize: 16,
-    borderRadius: 4,
-    paddingVertical: 12,
-    marginTop: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#FFF",
-    shadowColor: "rgba(255, 22, 84, 0.24)",
-    shadowOffset: { width: 0, height: 9 },
-    shadowOpacity: 1,
-    shadowRadius: 20,
-    elevation: 5,
   },
 });

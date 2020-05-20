@@ -70,8 +70,8 @@ const DrawerScreen = ({ navigation }: any) => {
             <ListItem
               key={index}
               title={item.title}
-              leftIcon={{ name: item.icon, color: themes.primaryColor }}
-              titleStyle={{ color: themes.darkFont }}
+              leftIcon={{ name: item.icon, color: themes.colorPrimary }}
+              titleStyle={{ color: themes.colorDarkFont }}
               bottomDivider
               chevron
               onPress={() => {
@@ -83,8 +83,8 @@ const DrawerScreen = ({ navigation }: any) => {
         <View style={styles.bottomItems}>
           <ListItem
             title={item.title}
-            leftIcon={{ name: item.icon, color: themes.primaryColor }}
-            titleStyle={{ color: themes.darkFont }}
+            leftIcon={{ name: item.icon, color: themes.colorPrimary }}
+            titleStyle={{ color: themes.colorDarkFont }}
             onPress={() => {
               navigation.navigate(item.screen);
             }}
@@ -99,7 +99,7 @@ export default DrawerScreen;
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: themes.primaryColor,
+    backgroundColor: themes.colorPrimary,
     paddingTop:
       Platform.OS === "ios" ? Constants.statusBarHeight : header.paddingTop,
     padding: header.padding,

@@ -1,6 +1,8 @@
 import themes from "./theme";
+import images from "./images";
 import header from "./header";
-import { initialStore, reducer } from "./store";
+import { reducer } from "./store";
+import initialStore from "./initialStore";
 import StoreContext from "./storeContext";
 
-export { initialStore, reducer, themes, header, StoreContext };
+export { initialStore, reducer, themes, images, header, StoreContext };

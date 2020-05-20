@@ -1,8 +1,9 @@
 export type MessageStatusType = "pending" | "sent" | "received" | "red";
-export type HeaderType = "normal" | "back" | "hide";
+export type HeaderType = "normal" | "back" | "strict-back" | "hide";
 export type ActionType =
   | "RESET"
   | "SET_ONLINE"
+  | "SET_USERNAME"
   | "SET_OFFLINE"
   | "GET_MESSAGES"
   | "SET_MESSAGES"
@@ -21,7 +22,12 @@ export interface Message {
 }
 
 export interface Store {
+  serverUrl: string;
+  webSocketUrl: string;
+  facebookAppID: string;
   connectionStatus: boolean;
+  token: string;
+  username: string;
   messages: Message[] | null;
   webSocketRef: WebSocket | null;
 }

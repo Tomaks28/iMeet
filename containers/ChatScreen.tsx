@@ -22,10 +22,10 @@ const ChatScreen = (props: any) => {
               labelStyle: {
                 textTransform: "capitalize",
                 fontSize: 16,
-                color: themes.primaryColor,
+                color: themes.colorPrimary,
               },
               indicatorStyle: {
-                backgroundColor: themes.primaryColor,
+                backgroundColor: themes.colorPrimary,
               },
               // backBehavior = "",
             }}

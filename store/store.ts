@@ -1,23 +1,20 @@
 import { Store, StoreActionType } from "../interfaces";
-
-export const initialStore: Store = {
-  connectionStatus: false,
-  messages: null,
-  webSocketRef: null,
-};
+import initialStore from "./initialStore";
 
 export const reducer = (state: Store, action: StoreActionType) => {
   switch (action.type) {
-    case "reset":
+    case "RESET":
       return initialStore;
-    case "setOnline":
+    case "SET_ONLINE":
       return { ...state, connectionStatus: true };
-    case "setOffline":
+    case "SET_OFFLINE":
       return { ...state, connectionStatus: false };
-    case "setMessages":
+    case "SET_MESSAGES":
       return { ...state, messages: action.payload };
-    case "setRealTimeSendFunction":
-      return { ...state, webSocketRef: action.payload };
+    case "SET_USERNAME":
+      return { ...state, username: action.payload };
+    // case "setRealTimeSendFunction":
+    // return { ...state, webSocketRef: action.payload };
     default:
       return state;
   }

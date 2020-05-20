@@ -2,21 +2,20 @@ import { useEffect, useState } from "react";
 import { Keyboard, KeyboardEvent, Dimensions } from "react-native";
 
 const useKeyboardHeight = (): any => {
-  const [keyboardHeight, setKeyboardHeight] = useState(
-    Dimensions.get("window").height
-  );
-  const [shown, setShown] = useState(false);
+  const [keyboard, setKeyboard] = useState({
+    show: false,
+    height: 0,
+  });
 
   const onKeyboardDidShow = (e: KeyboardEvent): void => {
-    setKeyboardHeight(
-      Dimensions.get("window").height - e.endCoordinates.height
-    );
-    setShown(true);
+    setKeyboard({
+      show: true,
+      height: Dimensions.get("window").height - e.endCoordinates.height,
+    });
   };
 
   const onKeyboardDidHide = (): void => {
-    setKeyboardHeight(Dimensions.get("window").height);
-    setShown(false);
+    setKeyboard({ show: false, height: 0 });
   };
 
   useEffect(() => {
@@ -28,7 +27,7 @@ const useKeyboardHeight = (): any => {
     };
   }, []);
 
-  return { keyboardHeight, shown };
+  return keyboard;
 };
 
 export default useKeyboardHeight;

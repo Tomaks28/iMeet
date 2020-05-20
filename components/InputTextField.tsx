@@ -5,10 +5,11 @@ import { Entypo } from "@expo/vector-icons";
 import { themes } from "../store";
 
 interface Props {
-  errorMessage: string;
   title: string;
   icon: string;
-  valueChanged: (value: string) => void;
+  onTextChange: (value: string) => void;
+  onFocus?: () => void;
+  errorMessage?: string;
   hidden?: boolean;
   setHidden?: () => void;
   margin?: number;
@@ -18,9 +19,13 @@ const InputTextField = (props: Props) => {
   return (
     <Input
       secureTextEntry={props.hidden}
-      onChangeText={(value) => props.valueChanged(value)}
+      autoCapitalize="none"
+      onFocus={() => {
+        props.onFocus && props.onFocus();
+      }}
+      onChangeText={(value) => props.onTextChange(value)}
       errorMessage={props.errorMessage}
-      errorStyle={{ color: themes.primaryColor }}
+      errorStyle={{ color: themes.colorPrimary }}
       containerStyle={{
         marginTop: props.margin,
       }}

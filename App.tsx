@@ -33,7 +33,7 @@ const App = () => {
     <StoreContext.Provider value={{ store, dispatch }}>
       <NavigationContainer>
         <StatusBar
-          backgroundColor={themes.primaryColor}
+          backgroundColor={themes.colorPrimary}
           barStyle="dark-content"
         />
         <Drawer.Navigator

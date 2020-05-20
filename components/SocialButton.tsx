@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Text } from "react-native-elements";
+import { images } from "../store";
 
 interface Props {
   type: string;
@@ -16,8 +17,8 @@ const SocialButton = (props: Props) => {
       <Image
         source={
           props.type.toLowerCase() === "google"
-            ? require("../assets/google.png")
-            : require("../assets/facebook.png")
+            ? images.google
+            : images.facebook
         }
         style={styles.socialLogo}
       />

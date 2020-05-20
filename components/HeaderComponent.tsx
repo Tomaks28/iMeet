@@ -7,7 +7,7 @@ import {
   Platform,
 } from "react-native";
 import Constants from "expo-constants";
-import { Header, Icon, Avatar, Badge, Text } from "react-native-elements";
+import { Icon, Avatar, Badge, Text } from "react-native-elements";
 import { themes, header } from "../store";
 import { HeaderType } from "../interfaces";
 
@@ -24,42 +24,61 @@ const HeaderComponent = ({ props, title, type = "normal" }: Props) => {
       {type !== "hide" ? (
         <>
           <StatusBar
-            backgroundColor={themes.primaryColor}
-            barStyle="light-content"
+            backgroundColor={themes.colorPrimary}
+            barStyle={type === "strict-back" ? "dark-content" : "light-content"}
           />
-          <View style={[styles.header]}>
+          <View
+            style={[
+              styles.header,
+              type === "strict-back"
+                ? { backgroundColor: "transparent" }
+                : null,
+            ]}
+          >
             <View style={styles.spacer}>
               {type === "normal" ? (
                 <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
                   <Icon name="menu" color="#fff" size={30} />
                 </TouchableOpacity>
-              ) : (
+              ) : type === "back" ? (
                 <TouchableOpacity onPress={() => props.navigation.goBack()}>
                   <Icon name="keyboard-arrow-left" color="#fff" size={30} />
                 </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                  <Icon
+                    name="keyboard-arrow-left"
+                    color={themes.colorPrimary}
+                    size={30}
+                  />
+                </TouchableOpacity>
               )}
             </View>
-            <Text style={styles.centerComponent} numberOfLines={1}>
-              {title}
-            </Text>
+            {type !== "strict-back" ? (
+              <Text style={styles.centerComponent} numberOfLines={1}>
+                {title}
+              </Text>
+            ) : null}
             <View style={styles.spacer}>
-              <TouchableOpacity
-                onPress={() => props.navigation.navigate("MessagesScreen")}
-              >
-                <View>
-                  <Avatar rounded size="medium" icon={{ name: "textsms" }} />
-                  {newMessage && (
-                    <Badge
-                      containerStyle={{
-                        position: "absolute",
-                        right: 0,
-                        top: 10,
-                      }}
-                      badgeStyle={styles.badgeStyle}
-                    />
-                  )}
-                </View>
-              </TouchableOpacity>
+              {type === "normal" ? (
+                <TouchableOpacity
+                  onPress={() => props.navigation.navigate("MessagesScreen")}
+                >
+                  <View>
+                    <Avatar rounded size="medium" icon={{ name: "textsms" }} />
+                    {newMessage && (
+                      <Badge
+                        containerStyle={{
+                          position: "absolute",
+                          right: 0,
+                          top: 10,
+                        }}
+                        badgeStyle={styles.badgeStyle}
+                      />
+                    )}
+                  </View>
+                </TouchableOpacity>
+              ) : null}
             </View>
           </View>
         </>
@@ -72,7 +91,7 @@ export default HeaderComponent;
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: themes.primaryColor,
+    backgroundColor: themes.colorPrimary,
     paddingTop:
       Platform.OS === "ios" ? Constants.statusBarHeight : header.paddingTop,
     padding: header.padding,

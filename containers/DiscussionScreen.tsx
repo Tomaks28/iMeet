@@ -21,7 +21,7 @@ import { StoreContext } from "../store";
 // const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const DiscussionScreen = (props: any) => {
-  const { keyboardHeight, shown } = useKeyboardHeight();
+  const keyboardHeight = useKeyboardHeight();
   const [message, setMessage] = useState("");
   // const chatHeight = new Animated.Value(Dimensions.get("window").height);
   const {
@@ -71,7 +71,7 @@ const DiscussionScreen = (props: any) => {
               setMessage("");
             }}
           >
-            <Ionicons name="md-send" size={32} color={themes.primaryColor} />
+            <Ionicons name="md-send" size={32} color={themes.colorPrimary} />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -96,12 +96,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: 10,
-    borderColor: themes.primaryColor,
+    borderColor: themes.colorPrimary,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
   input: {
     flex: 0.95,
-    borderColor: themes.primaryColor,
+    borderColor: themes.colorPrimary,
     paddingHorizontal: 16,
     padding: 5,
     borderWidth: StyleSheet.hairlineWidth,
