@@ -20,35 +20,32 @@ const SplashScreen = ({ navigation }: Props) => {
 
   useEffect(() => {
     (async function () {
-      try {
-        const token = await AsyncStorage.getItem("token");
-        if (token) {
-          axios
-            .get(store.serverUrl + "user", {
-              headers: { Authorization: `Bearer ${token}` },
-            })
-            .then(async ({ data }) => {
-              const { email, token, username } = data;
-              await AsyncStorage.setItem("email", email);
-              dispatch({
-                type: "USER_INFO",
-                payload: {
-                  email,
-                  token,
-                  username,
-                },
-              });
-              navigation.navigate("HomeScreen");
-            })
-            .catch((error) => {
-              navigation.navigate("SignInScreen");
+      const token = await AsyncStorage.getItem("token");
+      if (token) {
+        axios
+          .get(store.serverUrl + "/user", {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then(async ({ data }) => {
+            await AsyncStorage.setItem("email", data.email);
+            await AsyncStorage.setItem("username", data.username);
+            await AsyncStorage.setItem("token", data.token);
+            dispatch({
+              type: "USER_INFO",
+              payload: {
+                auth: true,
+                email: data.email,
+                token: data.token,
+                username: data.username,
+              },
             });
-        } else {
-          navigation.navigate("SignInScreen");
-        }
-      } catch (err) {
-        setModal({ show: true, text: err.message });
-        // BackHandler.exitApp();
+            navigation.navigate("HomeScreen");
+          })
+          .catch((error) => {
+            navigation.navigate("SignInScreen");
+          });
+      } else {
+        navigation.navigate("SignInScreen");
       }
     })();
   }, []);

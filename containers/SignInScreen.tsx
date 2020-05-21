@@ -96,6 +96,7 @@ const SignInScreen = (props: any) => {
           dispatch({
             type: "USER_INFO",
             payload: {
+              auth: true,
               email: data.email,
               token: data.token,
               username: data.username,

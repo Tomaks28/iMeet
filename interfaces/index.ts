@@ -3,6 +3,7 @@ export type HeaderType = "normal" | "back" | "strict-back" | "hide";
 export type ActionType =
   | "RESET"
   | "USER_INFO"
+  | "SET_WEBSOCKET"
   | "SET_ONLINE"
   | "SET_USERNAME"
   | "SET_TOKEN"
@@ -11,7 +12,7 @@ export type ActionType =
   | "SET_MESSAGES"
   | "WS_SEND";
 
-export interface StoreActionType {
+export interface StorePayload {
   type: ActionType;
   payload?: any;
 }
@@ -26,11 +27,21 @@ export interface Message {
 export interface Store {
   serverUrl: string;
   webSocketUrl: string;
+  ws: WebSocket | null;
+  wsStatus: string;
+  wsSend: () => void;
+  wsRead: () => void;
+  wsOnMessage: () => void;
+  wsReconnectionMs: number;
+  authenticated: boolean;
   facebookAppID: string;
-  connectionStatus: boolean;
   token: string;
   username: string;
   email: string;
   messages: Message[] | null;
-  webSocketRef: WebSocket | null;
+}
+
+export interface IRealTime {
+  store: Store;
+  dispatch: React.Dispatch<StorePayload>;
 }

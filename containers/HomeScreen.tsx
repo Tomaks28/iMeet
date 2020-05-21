@@ -5,7 +5,7 @@ import { HeaderComponent, Button } from "../components";
 import { StoreContext } from "../store";
 
 const HomeScreen = (props: any) => {
-  const context = useContext(StoreContext);
+  const { store, dispatch } = useContext(StoreContext);
   // console.log("home", context.store);
   return (
     <View>
@@ -13,7 +13,7 @@ const HomeScreen = (props: any) => {
       <Button
         text="test"
         onPress={() => {
-          console.log(new Date(), context.store);
+          console.log(new Date(), store);
         }}
       ></Button>
     </View>

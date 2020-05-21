@@ -1,30 +1,39 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useWebSocket, useTimer } from "../hooks";
-import { Store, StoreActionType } from "../interfaces";
+import { IRealTime } from "../interfaces";
 
-const RealTimeManager = (
-  store: Store,
-  dispatch: React.Dispatch<StoreActionType>
-) => {
-  const { status, onMessage, ws } = useWebSocket("localhost:8080", 5000, true);
+const RealTimeManager = ({ store, dispatch }: IRealTime) => {
+  const [render, setRender] = useState(false);
+  let handler = useRef<number>(0).current;
+  // WebSocket custon hook
+  const { status, message, start, read, send, stop } = useWebSocket(
+    store.webSocketUrl
+  );
 
-  // Store onSend function to Store
+  // WebSocket reconnection manager
   useEffect(() => {
-    if (status === "OPEN") {
-      dispatch({ type: "WS_SEND", payload: ws });
-      dispatch({ type: "SET_ONLINE" });
-    }
-  }, [status]);
-
-  // Message Event Handler
-  useEffect(() => {
-    if (status === "OPEN") {
-      if (store.connectionStatus) {
-        dispatch({ type: "SET_MESSAGES", payload: onMessage });
-        console.log("message occured");
+    // Check if user is authenticated
+    if (store.authenticated) {
+      // Connect websocket to server
+      if (status !== "OPEN") {
+        handler = setInterval(() => {
+          start();
+          setRender((prev) => !prev);
+        }, store.wsReconnectionMs);
       }
+      // Update context store
+      dispatch({
+        type: "SET_WEBSOCKET",
+        payload: {
+          wsStatus: status,
+          wsSend: send,
+          wsRead: read,
+          wsOnMessage: message,
+        },
+      });
     }
-  }, [onMessage]);
+    return () => clearInterval(handler);
+  }, [store.authenticated, status, render]);
 };
 
 export default RealTimeManager;

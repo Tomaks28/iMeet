@@ -1,60 +1,57 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-const useWebSocket = (
-  url = "localhost:8080",
-  reconnectionTimeMs = 10000,
-  debug = true
-) => {
-  const [timeoutHandler, setTimeoutHandler] = useState(0);
-  const [ws, setWs] = useState<null | WebSocket>(null);
-  const [mode, setMode] = useState<"ws" | "timer">("ws");
-  const [status, setStatus] = useState<"OPEN" | "CLOSE">("CLOSE");
-  const [messages, setMessages] = useState([]);
+const useWebSocket = (serverUrl: string) => {
+  const [ws, setWs] = useState<WebSocket | null>(null);
+  const [message, setMessage] = useState<any>(null);
+  const [status, setStatus] = useState<"OPEN" | "CLOSE" | "ERROR">("CLOSE");
 
-  const _onSend = (message: string) => {
-    if (ws) {
-      ws.send(message);
+  const start = () => {
+    if (!ws) {
+      setWs(new WebSocket(serverUrl || "ws://localhost:8080"));
     }
   };
 
-  useEffect(() => {
-    if (mode === "timer") {
-      // Timer mode before attempting new connection
-      setTimeoutHandler(
-        setTimeout(() => {
-          setMode("ws");
-        }, reconnectionTimeMs)
-      );
-    } else {
-      // WebSocket Mode to connect at distante server
-      const wsClient = new WebSocket("ws://" + url);
-      wsClient.onopen = () => {
-        debug && console.log("ws opened at " + url);
-        setStatus("OPEN");
-      };
-      wsClient.onclose = () => {
-        debug && console.log("ws closed");
-        setMode("timer");
-        setStatus("CLOSE");
-      };
-      wsClient.onmessage = (e) => {
-        debug && console.log("message received", e.data);
-        setMessages(e.data);
-      };
-
-      setWs(wsClient);
+  const stop = () => {
+    if (ws) {
+      ws.close();
+      setWs(null);
     }
+  };
 
-    return () => {
-      // Component unmounted
-      clearTimeout(timeoutHandler);
-      if (ws) {
-        ws.close();
-      }
+  const send = (message: any) => {
+    if (ws) {
+      ws.send(JSON.stringify(message));
+    } else {
+      setMessage("No WebSocket connection");
+    }
+  };
+
+  const read = () => {
+    setMessage(null);
+    return message;
+  };
+
+  if (ws) {
+    ws.onopen = () => {
+      console.log("ws opened");
+      setStatus("OPEN");
     };
-  }, [mode]);
+    ws.onclose = () => {
+      console.log("ws closed");
+      setStatus("CLOSE");
+      setWs(null);
+    };
+    ws.onmessage = ({ data }) => {
+      setMessage(JSON.parse(data));
+    };
+    ws.onerror = (error) => {
+      // console.log("ws error", error);
+      setStatus("ERROR");
+      setWs(null);
+    };
+  }
 
-  return { status, onMessage: messages, ws };
+  return { status, message, start, read, send, stop };
 };
 
 export default useWebSocket;

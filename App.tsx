@@ -28,7 +28,7 @@ const App = () => {
   const [store, dispatch] = useReducer(reducer, initialStore);
 
   // Real Time WebSocket Manager
-  // RealTimeManager(store, dispatch);
+  RealTimeManager({ store, dispatch });
 
   return (
     <StoreContext.Provider value={{ store, dispatch }}>
