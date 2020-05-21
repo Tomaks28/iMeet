@@ -14,7 +14,11 @@ import * as Facebook from "expo-facebook";
 import Constants from "expo-constants";
 import { Text } from "react-native-elements";
 import { themes, header, images, StoreContext } from "../store";
-import { checkEmailFormat, checkPasswordFormat } from "../utilities";
+import {
+  checkEmailFormat,
+  checkPasswordFormat,
+  getAxiosError,
+} from "../utilities";
 
 import { Api_signIn, Api_facebookLogin } from "../services/Api";
 
@@ -27,7 +31,7 @@ interface Login {
 }
 
 const SignInScreen = (props: any) => {
-  const context = useContext(StoreContext);
+  const { store, dispatch } = useContext(StoreContext);
   const [modal, setModal] = useState({ show: false, text: "" });
   const [login, setLogin] = useState({
     email: "",
@@ -77,22 +81,33 @@ const SignInScreen = (props: any) => {
   };
 
   //   Check if connection login info are filled
-  const handleConnection = (login: Login) => {
+  const handleConnection = () => {
     //   Check if email and password format are correct
     if (checkEmailFormat(login.email) && checkPasswordFormat(login.password)) {
       axios
-        .post(context.store.serverUrl + "user/signin", {
+        .post(store.serverUrl + "/user/signin", {
           email: login.email,
           password: login.password,
         })
         .then(async ({ data }) => {
+          await AsyncStorage.setItem("email", data.email);
+          await AsyncStorage.setItem("username", data.username);
           await AsyncStorage.setItem("token", data.token);
-          context.dispatch({ type: "SET_TOKEN", payload: data.token });
-          context.dispatch({ type: "SET_USERNAME", payload: data.username });
+          dispatch({
+            type: "USER_INFO",
+            payload: {
+              email: data.email,
+              token: data.token,
+              username: data.username,
+            },
+          });
           props.navigation.navigate("HomeScreen");
         })
         .catch((error) => {
-          setModal({ show: true, text: error.response.data.message });
+          setModal({
+            show: true,
+            text: getAxiosError(error),
+          });
           // BackHandler.exitApp();
         });
       //   const token = Api_SignIn();
@@ -107,7 +122,7 @@ const SignInScreen = (props: any) => {
   // function called when facebook connection button is pressed
   const connectFacebook = async () => {
     try {
-      await Facebook.initializeAsync(context.store.facebookAppID);
+      await Facebook.initializeAsync(store.facebookAppID);
       const {
         type,
         token,
@@ -165,12 +180,7 @@ const SignInScreen = (props: any) => {
           </Text>
         </TouchableOpacity>
 
-        <Button
-          text="Se connecter"
-          onPress={() => {
-            handleConnection(login);
-          }}
-        />
+        <Button text="Se connecter" onPress={handleConnection} />
 
         <View style={[styles.socialContainer, { marginTop: 24 }]}>
           <Text style={[styles.text, styles.signupQuestion]}>

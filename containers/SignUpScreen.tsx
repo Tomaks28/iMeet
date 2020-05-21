@@ -5,7 +5,7 @@ import { themes, images, StoreContext } from "../store";
 import { HeaderComponent, InputTextField, Button, Alert } from "../components";
 import { checkEmailFormat, checkPasswordFormat } from "../utilities";
 import Axios from "axios";
-import { getCacheData } from "../utilities/__getCacheData";
+import { getAxiosError } from "../utilities/";
 
 const SignUpScreen = (props: any) => {
   // const ref = useRef<any>(null);
@@ -32,9 +32,7 @@ const SignUpScreen = (props: any) => {
       login.password1 === login.password2
     ) {
       const { username, email, password1 } = login;
-      // console.log(new Date(), getCacheData());
-      // getCacheData();
-      Axios.post(store.serverUrl + "user/signup", {
+      Axios.post(store.serverUrl + "/user/signup", {
         username,
         email,
         password: password1,
@@ -51,11 +49,21 @@ const SignUpScreen = (props: any) => {
               username: data.username,
             },
           });
+          setModal({
+            show: true,
+            text:
+              "Votre compte a été créé avec success. Un email de confirmation vous a été envoyé. Merci de le confirmer",
+          });
           props.navigation.navigate("HomeScreen");
         })
         .catch((error) => {
-          setModal({ show: true, text: error.response.data.message });
+          setModal({
+            show: true,
+            text: getAxiosError(error),
+          });
         });
+    } else {
+      setModal({ show: true, text: "Merci de rensigner tous les champs" });
     }
   };
 
@@ -94,26 +102,27 @@ const SignUpScreen = (props: any) => {
     // } else {
     //   temp.passwordMatchErrorMessage = themes.errorMatchMessage;
     // }
-    setLogin((prev) => {
-      if (password) {
-        prev.password1 = password;
-        if (checkPasswordFormat(password)) {
-          prev.passwordErrorMessage = "";
-        } else {
-          prev.passwordErrorMessage = themes.errorPasswordMessage;
-        }
-      } else {
-        prev.password1 = "";
-        prev.passwordErrorMessage = "";
-      }
-      if (password === prev.password2) {
-        prev.passwordMatchErrorMessage = "";
-      } else {
-        prev.passwordMatchErrorMessage = themes.errorMatchMessage;
-      }
-      // return { ...prev };
-      return prev;
-    });
+    setLogin({ ...login, password1: password });
+    // setLogin((prev) => {
+    //   if (password) {
+    //     prev.password1 = password;
+    //     if (checkPasswordFormat(password)) {
+    //       prev.passwordErrorMessage = "";
+    //     } else {
+    //       prev.passwordErrorMessage = themes.errorPasswordMessage;
+    //     }
+    //   } else {
+    //     prev.password1 = "";
+    //     prev.passwordErrorMessage = "";
+    //   }
+    //   if (password === prev.password2) {
+    //     prev.passwordMatchErrorMessage = "";
+    //   } else {
+    //     prev.passwordMatchErrorMessage = themes.errorMatchMessage;
+    //   }
+    //   // return { ...prev };
+    //   return prev;
+    // });
   };
 
   const handlePasswordMatch = (password: string) => {

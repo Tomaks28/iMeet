@@ -6,6 +6,7 @@ import { themes, images, StoreContext } from "../store";
 import { HeaderComponent, InputTextField, Button, Alert } from "../components";
 import { checkEmailFormat } from "../utilities";
 import Axios from "axios";
+import { getAxiosError } from "../utilities/getAxiosError";
 
 const RecoveryScreen = (props: any) => {
   // const ref = useRef<any>(null);
@@ -15,15 +16,17 @@ const RecoveryScreen = (props: any) => {
 
   const handleRecover = () => {
     if (checkEmailFormat(email)) {
-      Axios.post(store.serverUrl + "user/reset", {
+      Axios.post(store.serverUrl + "/user/reset", {
         email,
       })
         .then(async ({ data }) => {
-          props.navigation.navigate("SignInScreen");
           setModal({ show: true, text: data.message });
         })
         .catch((error) => {
-          setModal({ show: true, text: error.response.data.message });
+          setModal({
+            show: true,
+            text: getAxiosError(error),
+          });
         });
     }
   };
@@ -58,6 +61,11 @@ const RecoveryScreen = (props: any) => {
           onPress={() => setModal({ show: false, text: "" })}
         />
       </KeyboardAwareScrollView>
+      <Alert
+        show={modal.show}
+        text={modal.text}
+        onPress={() => setModal({ show: false, text: "" })}
+      />
     </View>
   );
 };
