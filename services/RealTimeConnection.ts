@@ -34,6 +34,17 @@ const RealTimeManager = ({ store, dispatch }: IRealTime) => {
     }
     return () => clearInterval(handler);
   }, [store.authenticated, status, render]);
+
+  // Send message at connection
+  useEffect(() => {
+    if (status === "OPEN") {
+      send({
+        token: store.token,
+        type: "GET_MESSAGES",
+        payload: { lastUpdate: 0 },
+      });
+    }
+  }, [status]);
 };
 
 export default RealTimeManager;

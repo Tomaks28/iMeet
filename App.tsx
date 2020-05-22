@@ -28,7 +28,7 @@ const App = () => {
   const [store, dispatch] = useReducer(reducer, initialStore);
 
   // Real Time WebSocket Manager
-  RealTimeManager({ store, dispatch });
+  // RealTimeManager({ store, dispatch });
 
   return (
     <StoreContext.Provider value={{ store, dispatch }}>
@@ -38,7 +38,7 @@ const App = () => {
           barStyle="dark-content"
         />
         <Drawer.Navigator
-          initialRouteName="SplashScreen"
+          initialRouteName="DiscoverScreen"
           drawerContent={DrawerScreen}
         >
           <Drawer.Screen name="SplashScreen" component={SplashScreen} />
