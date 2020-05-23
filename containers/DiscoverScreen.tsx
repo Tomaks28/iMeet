@@ -7,6 +7,7 @@ import {
   Animated,
   PanResponder,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
 import { Text } from "react-native-elements";
 import { themes } from "../themes";
@@ -99,6 +100,7 @@ const DiscoverScreen = (props: any) => {
           if (index < swipeIndex) {
             return null;
           } else if (index === swipeIndex) {
+            // Top card
             return (
               <Animated.View
                 {...panResponder.panHandlers}
@@ -123,13 +125,30 @@ const DiscoverScreen = (props: any) => {
                 >
                   <Text style={styles.dislikeText}>NOPE</Text>
                 </Animated.View>
-                <Image
-                  style={[styles.image]}
-                  source={{ uri: item.picture.large }}
-                />
+                <View style={styles.card}>
+                  <Image
+                    style={[styles.image]}
+                    source={{ uri: item.picture.large }}
+                  />
+                  <LinearGradient
+                    colors={["rgba(0,0,0,0.1)", "black"]}
+                    style={styles.linearGradiant}
+                  >
+                    <View style={{ padding: 10 }}>
+                      <View style={{ flexDirection: "row" }}>
+                        <Text style={styles.cardName}>{item.name.first},</Text>
+                        <Text style={styles.cardAge}>{item.dob.age}</Text>
+                      </View>
+                      <Text style={styles.cardLocation}>
+                        {item.location.city}, {item.location.state}
+                      </Text>
+                    </View>
+                  </LinearGradient>
+                </View>
               </Animated.View>
             );
           } else {
+            // Below card
             return (
               <Animated.View
                 key={item.id.value}
@@ -141,10 +160,26 @@ const DiscoverScreen = (props: any) => {
                   },
                 ]}
               >
-                <Image
-                  style={[styles.image]}
-                  source={{ uri: item.picture.large }}
-                />
+                <View style={styles.card}>
+                  <Image
+                    style={[styles.image]}
+                    source={{ uri: item.picture.large }}
+                  />
+                  <LinearGradient
+                    colors={["rgba(0,0,0,0.1)", "black"]}
+                    style={styles.linearGradiant}
+                  >
+                    <View style={{ padding: 10 }}>
+                      <View style={{ flexDirection: "row" }}>
+                        <Text style={styles.cardName}>{item.name.first},</Text>
+                        <Text style={styles.cardAge}>{item.dob.age}</Text>
+                      </View>
+                      <Text style={styles.cardLocation}>
+                        {item.location.city}, {item.location.state}
+                      </Text>
+                    </View>
+                  </LinearGradient>
+                </View>
               </Animated.View>
             );
           }
@@ -158,7 +193,7 @@ const DiscoverScreen = (props: any) => {
     if (!swipeIndex) {
       (async function () {
         const { data } = await axios.get(
-          "https://randomuser.me/api/?gender=female&nat=fr&inc=id,gender,name,picture&results=5"
+          "https://randomuser.me/api/?gender=female&nat=fr&results=5"
         );
         setData(data.results);
         generateJsx(data.results);
@@ -180,7 +215,7 @@ const DiscoverScreen = (props: any) => {
     <View style={{ flex: 1 }}>
       <HeaderComponent {...{ props, title: "Discover" }} />
       <View style={styles.container}>
-        <View style={styles.card}>{jsx}</View>
+        <View style={styles.cards}>{jsx}</View>
       </View>
     </View>
   );
@@ -200,13 +235,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     position: "absolute",
   },
+  linearGradiant: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 100,
+  },
+  cards: {
+    flex: 1,
+  },
   card: {
     flex: 1,
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  cardName: {
+    color: "white",
+    fontSize: 24,
+  },
+  cardAge: {
+    fontSize: 24,
+    color: "lightgrey",
+  },
+  cardLocation: {
+    fontSize: 16,
+    color: "white",
   },
   image: {
     flex: 1,
     resizeMode: "cover",
-    borderRadius: 20,
   },
   likeAnimation: {
     position: "absolute",

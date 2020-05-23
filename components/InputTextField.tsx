@@ -7,7 +7,8 @@ import { themes } from "../themes";
 interface Props {
   value?: string;
   title: string;
-  icon: string;
+  icon?: string;
+  numberOfLines?: number;
   onTextChange: (value: string) => void;
   onFocus?: () => void;
   errorMessage?: string;
@@ -20,6 +21,7 @@ const InputTextField = (props: Props) => {
   return (
     <Input
       value={props.value}
+      numberOfLines={props.numberOfLines}
       secureTextEntry={props.hidden}
       autoCapitalize="none"
       onFocus={() => {

@@ -8,6 +8,8 @@ import MessageStatus from "./MessageStatus";
 import Alert from "./Alert";
 import KeyBoardAvoidComponent from "./KeyBoardAvoidComponent";
 import EmptyPicker from "./EmptyPicker";
+import Panel from "./Panel";
+import SelectionPanel from "./SelectionPanel";
 
 export {
   HeaderComponent,
@@ -20,4 +22,6 @@ export {
   Button,
   KeyBoardAvoidComponent,
   EmptyPicker,
+  Panel,
+  SelectionPanel,
 };

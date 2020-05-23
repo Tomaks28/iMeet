@@ -4,6 +4,7 @@ export const themes = {
   colorSecondary: "blue",
   colorLight: "gainsboro",
   colorGrey: "grey",
+  colorGold: "orange",
   colorUnreadBg: "#fff0fa",
   colorDarkFont: "#1B0806",
   colorDivider: "lightgrey",
