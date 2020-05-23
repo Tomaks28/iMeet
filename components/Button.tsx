@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "react-native-elements";
 
-import { themes } from "../store";
+import { themes } from "../themes";
 
 interface Props {
   text: string;

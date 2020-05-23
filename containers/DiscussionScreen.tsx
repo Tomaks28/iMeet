@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { themes } from "../store";
+import { themes } from "../themes";
 import { useKeyboardHeight } from "../hooks";
 
 import { BubbleList } from "../test";
@@ -25,7 +25,7 @@ const DiscussionScreen = (props: any) => {
   const [message, setMessage] = useState("");
   // const chatHeight = new Animated.Value(Dimensions.get("window").height);
   const {
-    store: { webSocketRef },
+    store: { wsSend },
     dispatch,
   } = useContext(StoreContext);
 
@@ -67,7 +67,7 @@ const DiscussionScreen = (props: any) => {
           />
           <TouchableOpacity
             onPress={() => {
-              webSocketRef && message && webSocketRef.send(message);
+              wsSend && message && wsSend(message);
               setMessage("");
             }}
           >

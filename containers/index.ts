@@ -12,6 +12,7 @@ import SignInScreen from "./SignInScreen";
 import SignUpScreen from "./SignUpScreen";
 import DiscussionScreen from "./DiscussionScreen";
 import RecoveryScreen from "./RecoveryScreen";
+import PictureScreen from "./PictureScreen";
 
 export {
   HomeScreen,
@@ -28,4 +29,5 @@ export {
   SignUpScreen,
   DiscussionScreen,
   RecoveryScreen,
+  PictureScreen,
 };

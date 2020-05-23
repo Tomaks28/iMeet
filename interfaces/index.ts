@@ -29,7 +29,7 @@ export interface Store {
   webSocketUrl: string;
   ws: WebSocket | null;
   wsStatus: string;
-  wsSend: () => void;
+  wsSend: (name: string) => void;
   wsRead: () => void;
   wsOnMessage: () => void;
   wsReconnectionMs: number;

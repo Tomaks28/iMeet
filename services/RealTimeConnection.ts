@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useWebSocket, useTimer } from "../hooks";
 import { IRealTime } from "../interfaces";
 
-const RealTimeManager = ({ store, dispatch }: IRealTime) => {
+export const RealTimeManager = ({ store, dispatch }: IRealTime) => {
   const [render, setRender] = useState(false);
   let handler = useRef<number>(0).current;
   // WebSocket custon hook
@@ -46,5 +46,3 @@ const RealTimeManager = ({ store, dispatch }: IRealTime) => {
     }
   }, [status]);
 };
-
-export default RealTimeManager;

@@ -6,9 +6,10 @@ import {
   Image,
   BackHandler,
 } from "react-native";
-import axios from "axios";
-import { StoreContext, images } from "../store";
+import { StoreContext } from "../store";
+import { images } from "../themes";
 import { Alert } from "../components";
+import { getUserInfo } from "../services";
 
 interface Props {
   navigation: any;
@@ -22,28 +23,26 @@ const SplashScreen = ({ navigation }: Props) => {
     (async function () {
       const token = await AsyncStorage.getItem("token");
       if (token) {
-        axios
-          .get(store.serverUrl + "/user", {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then(async ({ data }) => {
-            await AsyncStorage.setItem("email", data.email);
-            await AsyncStorage.setItem("username", data.username);
-            await AsyncStorage.setItem("token", data.token);
-            dispatch({
-              type: "USER_INFO",
-              payload: {
-                auth: true,
-                email: data.email,
-                token: data.token,
-                username: data.username,
-              },
-            });
-            navigation.navigate("HomeScreen");
-          })
-          .catch((error) => {
-            navigation.navigate("SignInScreen");
+        const { success, data } = await getUserInfo(token);
+        if (success) {
+          // Store data in mobile memory
+          await AsyncStorage.setItem("email", data.email);
+          await AsyncStorage.setItem("username", data.username);
+          await AsyncStorage.setItem("token", data.token);
+          // Update global context
+          dispatch({
+            type: "USER_INFO",
+            payload: {
+              auth: true,
+              email: data.email,
+              token: data.token,
+              username: data.username,
+            },
           });
+          navigation.navigate("HomeScreen");
+        } else {
+          navigation.navigate("SignInScreen");
+        }
       } else {
         navigation.navigate("SignInScreen");
       }

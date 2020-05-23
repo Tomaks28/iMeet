@@ -1,3 +1,2 @@
-import RealTimeManager from "./RealTimeConnection";
-
-export { RealTimeManager };
+export * from "./RealTimeConnection";
+export * from "./user.api";

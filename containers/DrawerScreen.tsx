@@ -7,7 +7,7 @@ import {
   Platform,
 } from "react-native";
 import Constants from "expo-constants";
-import { themes, header } from "../store";
+import { themes, header } from "../themes";
 
 import { Avatar, ListItem } from "react-native-elements";
 

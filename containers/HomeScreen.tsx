@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { themes } from "../store";
+import { themes } from "../themes";
 import { HeaderComponent, Button } from "../components";
 import { StoreContext } from "../store";
 

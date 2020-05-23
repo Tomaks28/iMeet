@@ -13,7 +13,8 @@ import axios from "axios";
 import * as Facebook from "expo-facebook";
 import Constants from "expo-constants";
 import { Text } from "react-native-elements";
-import { themes, header, images, StoreContext } from "../store";
+import { StoreContext } from "../store";
+import { themes, header, images } from "../themes";
 import {
   checkEmailFormat,
   checkPasswordFormat,

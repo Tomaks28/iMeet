@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { themes } from "../store";
+import { themes } from "../themes";
 import DiscussionScreen from "../containers/DiscussionScreen";
 import MatchScreen from "../containers/MatchScreen";
 import { HeaderComponent } from "../components";

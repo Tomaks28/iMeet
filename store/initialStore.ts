@@ -1,11 +1,12 @@
 import { Store, Message } from "../interfaces";
+import { serverUrl, webSocketUrl } from "../constants";
 
 const initialStore: Store = {
-  serverUrl: "http://192.168.1.49:4000",
-  webSocketUrl: "ws://192.168.1.49:8080",
+  serverUrl,
+  webSocketUrl,
   wsStatus: "CLOSE",
   ws: null,
-  wsSend: () => {},
+  wsSend: (message: string) => {},
   wsRead: () => {},
   wsOnMessage: () => {},
   wsReconnectionMs: 5000,

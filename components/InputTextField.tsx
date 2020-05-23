@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, Text } from "react-native";
 import { Input } from "react-native-elements";
 import { Entypo } from "@expo/vector-icons";
-import { themes } from "../store";
+import { themes } from "../themes";
 
 interface Props {
   value?: string;

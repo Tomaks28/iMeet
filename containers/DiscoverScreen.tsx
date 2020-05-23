@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import axios from "axios";
 import { Text } from "react-native-elements";
-import { themes } from "../store";
+import { themes } from "../themes";
 import { HeaderComponent } from "../components";
 
 const { height, width } = Dimensions.get("window");
@@ -155,19 +155,24 @@ const DiscoverScreen = (props: any) => {
 
   // Fetching profiles
   useEffect(() => {
-    (async function () {
-      const { data } = await axios.get(
-        "https://randomuser.me/api/?gender=female&nat=tr&inc=id,gender,name,picture&results=5"
-      );
-      setData(data.results);
-      generateJsx(data.results);
-    })();
+    if (!swipeIndex) {
+      (async function () {
+        const { data } = await axios.get(
+          "https://randomuser.me/api/?gender=female&nat=fr&inc=id,gender,name,picture&results=5"
+        );
+        setData(data.results);
+        generateJsx(data.results);
+      })();
+    }
   }, []);
 
   useEffect(() => {
     if (data) {
       generateJsx(data);
       position.setValue({ x: 0, y: 0 });
+      if (swipeIndex === data.length) {
+        setSwipeIndex(0);
+      }
     }
   }, [swipeIndex]);
 

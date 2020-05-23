@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Text } from "react-native-elements";
-import { themes } from "../store";
+import { themes } from "../themes";
 
 interface Props {
   show: boolean;

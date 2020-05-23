@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { themes } from "../store";
+import { themes } from "../themes";
 import { HeaderComponent } from "../components";
 
 const FavoriteScreen = (props: any) => {

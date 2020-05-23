@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { Icon, Avatar, Badge, Text } from "react-native-elements";
-import { themes, header } from "../store";
+import { themes, header } from "../themes";
 import { HeaderType } from "../interfaces";
 
 interface Props {

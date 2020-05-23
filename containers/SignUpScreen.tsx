@@ -1,7 +1,8 @@
 import React, { useState, useContext, useRef } from "react";
 import { View, StyleSheet, Image, AsyncStorage } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { themes, images, StoreContext } from "../store";
+import { StoreContext } from "../store";
+import { themes, images } from "../themes";
 import { HeaderComponent, InputTextField, Button, Alert } from "../components";
 import { checkEmailFormat, checkPasswordFormat } from "../utilities";
 import Axios from "axios";

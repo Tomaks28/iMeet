@@ -1,6 +1,6 @@
 import React from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { themes } from "../store";
+import { themes } from "../themes";
 import { MessageStatusType } from "../interfaces";
 
 interface Props {

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { themes } from "../store";
+import { themes } from "../themes";
 import { timeDifference } from "../utilities";
 
 import { Avatar, Badge } from "react-native-elements";
@@ -72,10 +72,10 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
     borderBottomWidth: 0.2,
-    borderBottomColor: themes.dividerColor,
+    borderBottomColor: themes.colorDivider,
   },
   greyBg: {
-    backgroundColor: themes.unreadBg,
+    backgroundColor: themes.colorUnreadBg,
   },
   textBlock: { flex: 1, padding: 10 },
   name: {

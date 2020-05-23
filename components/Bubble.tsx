@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { themes } from "../store";
+import { themes } from "../themes";
 import MessageStatus from "./MessageStatus";
 import { MessageStatusType } from "../interfaces";
 import { Text } from "react-native-elements";

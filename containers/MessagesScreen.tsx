@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import axios from "axios";
-import { themes, StoreContext } from "../store";
+import { StoreContext } from "../store";
+import { themes } from "../themes";
 import { HeaderComponent, MessageComponent } from "../components";
 import { messages } from "../test";
 
