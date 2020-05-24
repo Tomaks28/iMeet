@@ -11,7 +11,6 @@ export const pickImage = async () => {
       allowsEditing: true,
       aspect: [4, 3],
     });
-    console.log(pickerResult);
     if (!pickerResult.cancelled) {
       return pickerResult.uri;
     }

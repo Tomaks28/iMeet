@@ -22,29 +22,15 @@ const screenHeight = Dimensions.get("window").height;
 const ProfileScreen = (props: any) => {
   const { store } = useContext(StoreContext);
   const scaleValue = new Animated.Value(0);
-  const [data, setData] = useState<any>(null);
+  const [images, setImages] = useState<any>([]);
   const [showDelete, setShowDelete] = useState(false);
-  const [image, setImage] = useState<string | null | undefined>(null);
-
-  useEffect(() => {
-    (async function () {
-      if (image) {
-        uploadImage(store.serverUrl + "/cloudinary/upload", image, store.token);
-        setImage(null);
-      }
-    })();
-  }, [image]);
-  // const photos = [
-  //   "https://res.cloudinary.com/tomaks/image/upload/v1590221740/iMeet/onur/takHDPhoto_jqg8pj.png",
-  //   "https://res.cloudinary.com/tomaks/image/upload/v1590221740/iMeet/onur/takHDPhoto_jqg8pj.png",
-  // ];
 
   // Fetch data from server
   useEffect(() => {
     (async function () {
       const { success, data } = await getUserInfo(store.token);
       if (success) {
-        setData(data);
+        setImages(data.pictures);
       }
     })();
   }, []);
@@ -64,7 +50,7 @@ const ProfileScreen = (props: any) => {
   const showPhotos = () => {
     const array = [];
     for (let i = 0; i < 6; i++) {
-      if (data && data.pictures[i]) {
+      if (images[i]) {
         array.push(
           <View key={i} style={{ position: "relative" }}>
             <TouchableWithoutFeedback
@@ -77,7 +63,7 @@ const ProfileScreen = (props: any) => {
                 <Image
                   style={styles.box}
                   source={{
-                    uri: data.pictures[i],
+                    uri: images[i],
                   }}
                 />
                 {showDelete ? (
@@ -96,7 +82,7 @@ const ProfileScreen = (props: any) => {
                     <TouchableOpacity onPress={() => {}}>
                       <Entypo
                         name="circle-with-cross"
-                        size={16}
+                        size={20}
                         color={themes.colorPrimary}
                       />
                     </TouchableOpacity>
@@ -122,7 +108,18 @@ const ProfileScreen = (props: any) => {
           <View key={i} style={[styles.box, styles.emptyBox]}>
             <TouchableOpacity
               onPress={async () => {
-                setImage(await pickImage());
+                const image = await pickImage();
+                if (image) {
+                  const response: any = await uploadImage(
+                    store.serverUrl + "/cloudinary/upload",
+                    image,
+                    store.token
+                  );
+                  console.log(response);
+                  if (response) {
+                    setImages(response.pictures);
+                  }
+                }
               }}
             >
               <Ionicons
@@ -204,8 +201,8 @@ const styles = StyleSheet.create({
   },
   delete: {
     position: "absolute",
-    top: 5,
-    right: 5,
+    top: 0,
+    right: 0,
   },
   box: {
     borderRadius: 14,
