@@ -10,6 +10,7 @@ export type ActionType =
   | "SET_OFFLINE"
   | "GET_MESSAGES"
   | "SET_MESSAGES"
+  | "SET_PICTURES"
   | "WS_SEND";
 
 export interface StorePayload {
@@ -39,6 +40,7 @@ export interface Store {
   username: string;
   email: string;
   messages: Message[] | null;
+  pictures: Array<string>;
 }
 
 export interface IRealTime {

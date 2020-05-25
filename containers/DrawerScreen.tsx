@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,28 @@ import {
   Platform,
 } from "react-native";
 import Constants from "expo-constants";
-import { themes, header } from "../themes";
-
 import { Avatar, ListItem } from "react-native-elements";
+import { themes, header, images } from "../themes";
+import { getUserInfo } from "../services";
+import { StoreContext } from "../store";
 
 const DrawerScreen = ({ navigation }: any) => {
+  const { store } = useContext(StoreContext);
+  const [avatar, setAvatar] = useState(images.emptyAvatar);
+
+  useEffect(() => {
+    (async function () {
+      const { success, data } = await getUserInfo(store.token);
+      if (success) {
+        if (data.pictures.length) {
+          setAvatar(data.pictures[0].url);
+        } else {
+          setAvatar(images.emptyAvatar);
+        }
+      }
+    })();
+  }, [store.token, store.pictures]);
+
   const list = [
     {
       title: "Discover",
@@ -53,8 +70,7 @@ const DrawerScreen = ({ navigation }: any) => {
           size="medium"
           showAccessory
           source={{
-            uri:
-              "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
+            uri: avatar,
           }}
           onAccessoryPress={() => {
             navigation.navigate("ProfileScreen");
@@ -95,6 +111,7 @@ const DrawerScreen = ({ navigation }: any) => {
   );
 };
 
+// export default withNavigationFocus(DrawerScreen);
 export default DrawerScreen;
 
 const styles = StyleSheet.create({

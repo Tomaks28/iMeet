@@ -5,3 +5,4 @@ export * from "./getAxiosError";
 export * from "./fetchData";
 export * from "./pickImage";
 export * from "./uploadImage";
+export * from "./deleteImage";

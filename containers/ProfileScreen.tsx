@@ -14,15 +14,15 @@ import { themes } from "../themes";
 import { HeaderComponent, InputTextField, SelectionPanel } from "../components";
 import { StoreContext } from "../store";
 import { getUserInfo } from "../services";
-import { pickImage, uploadImage } from "../utilities";
+import { pickImage, uploadImage, deleteImage } from "../utilities";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const ProfileScreen = (props: any) => {
-  const { store } = useContext(StoreContext);
+  const { store, dispatch } = useContext(StoreContext);
   const scaleValue = new Animated.Value(0);
-  const [images, setImages] = useState<any>([]);
+  const [images, setImages] = useState<Array<any>>([]);
   const [showDelete, setShowDelete] = useState(false);
 
   // Fetch data from server
@@ -30,7 +30,9 @@ const ProfileScreen = (props: any) => {
     (async function () {
       const { success, data } = await getUserInfo(store.token);
       if (success) {
-        setImages(data.pictures);
+        if (data !== undefined) {
+          setImages(data.pictures);
+        }
       }
     })();
   }, []);
@@ -45,6 +47,33 @@ const ProfileScreen = (props: any) => {
       toValue: 1,
       friction: 2,
     }).start();
+  };
+
+  const handleImageDelete = async (index: number) => {
+    const response: any = await deleteImage(
+      store.serverUrl + "/cloudinary/delete",
+      images[index].public_id,
+      store.token
+    );
+    if (response) {
+      setImages(response.pictures);
+      dispatch({ type: "SET_PICTURES", payload: response.pictures });
+    }
+  };
+
+  const handleImageUpload = async () => {
+    const image = await pickImage();
+    if (image) {
+      const response: any = await uploadImage(
+        store.serverUrl + "/cloudinary/upload",
+        image,
+        store.token
+      );
+      if (response) {
+        setImages(response.pictures);
+        dispatch({ type: "SET_PICTURES", payload: response.pictures });
+      }
+    }
   };
 
   const showPhotos = () => {
@@ -63,7 +92,7 @@ const ProfileScreen = (props: any) => {
                 <Image
                   style={styles.box}
                   source={{
-                    uri: images[i],
+                    uri: images[i].url,
                   }}
                 />
                 {showDelete ? (
@@ -79,7 +108,7 @@ const ProfileScreen = (props: any) => {
                       },
                     ]}
                   >
-                    <TouchableOpacity onPress={() => {}}>
+                    <TouchableOpacity onPress={() => handleImageDelete(i)}>
                       <Entypo
                         name="circle-with-cross"
                         size={20}
@@ -106,22 +135,7 @@ const ProfileScreen = (props: any) => {
       } else {
         array.push(
           <View key={i} style={[styles.box, styles.emptyBox]}>
-            <TouchableOpacity
-              onPress={async () => {
-                const image = await pickImage();
-                if (image) {
-                  const response: any = await uploadImage(
-                    store.serverUrl + "/cloudinary/upload",
-                    image,
-                    store.token
-                  );
-                  console.log(response);
-                  if (response) {
-                    setImages(response.pictures);
-                  }
-                }
-              }}
-            >
+            <TouchableOpacity onPress={handleImageUpload}>
               <Ionicons
                 name="md-add-circle"
                 size={24}

@@ -15,6 +15,8 @@
     "axios": "^0.19.2",
     "expo": "~37.0.3",
     "expo-facebook": "^8.1.0",
+    "expo-image-picker": "~8.1.0",
+    "expo-linear-gradient": "~8.1.0",
     "moment": "^2.25.3",
     "native-base": "^2.13.12",
     "react": "~16.9.0",
@@ -29,8 +31,7 @@
     "react-native-screens": "^2.2.0",
     "react-native-tab-view": "^2.14.0",
     "react-native-web": "~0.11.7",
-    "expo-image-picker": "~8.1.0",
-    "expo-linear-gradient": "~8.1.0"
+    "react-navigation": "^4.3.9"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

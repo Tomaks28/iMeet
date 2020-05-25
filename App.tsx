@@ -41,7 +41,7 @@ const App = () => {
         />
         <Drawer.Navigator
           initialRouteName="SplashScreen"
-          drawerContent={DrawerScreen}
+          drawerContent={(props) => <DrawerScreen {...props} />} //Drawer content accepts render function so the function you're providing is not considered as a component.
         >
           <Drawer.Screen name="SplashScreen" component={SplashScreen} />
           <Drawer.Screen name="SignInScreen" component={SignInScreen} />

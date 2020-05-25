@@ -26,6 +26,8 @@ const reducer = (state: Store, { type, payload }: StorePayload) => {
       return { ...state, connectionStatus: false };
     case "SET_MESSAGES":
       return { ...state, messages: payload };
+    case "SET_PICTURES":
+      return { ...state, pictures: payload };
     default:
       return state;
   }

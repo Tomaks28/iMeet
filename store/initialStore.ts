@@ -16,6 +16,7 @@ const initialStore: Store = {
   username: "",
   email: "",
   messages: null,
+  pictures: [],
 };
 
 export default initialStore;
