@@ -10,6 +10,7 @@ import KeyBoardAvoidComponent from "./KeyBoardAvoidComponent";
 import EmptyPicker from "./EmptyPicker";
 import Panel from "./Panel";
 import SelectionPanel from "./SelectionPanel";
+import PhotoModal from "./PhotoModal";
 
 export {
   HeaderComponent,
@@ -24,4 +25,5 @@ export {
   EmptyPicker,
   Panel,
   SelectionPanel,
+  PhotoModal,
 };

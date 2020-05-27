@@ -1,5 +1,6 @@
 export type MessageStatusType = "pending" | "sent" | "received" | "red";
 export type HeaderType = "normal" | "back" | "strict-back" | "hide";
+export type PhotoChoice = "GALLERY" | "CAMERA" | "CANCEL";
 export type ActionType =
   | "RESET"
   | "USER_INFO"

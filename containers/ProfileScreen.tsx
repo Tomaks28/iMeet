@@ -11,17 +11,24 @@ import {
 import { Image, Text } from "react-native-elements";
 import { Ionicons, Entypo, AntDesign, Fontisto } from "@expo/vector-icons";
 import { themes } from "../themes";
-import { HeaderComponent, InputTextField, SelectionPanel } from "../components";
+import {
+  HeaderComponent,
+  InputTextField,
+  SelectionPanel,
+  PhotoModal,
+} from "../components";
 import { StoreContext } from "../store";
 import { getUserInfo } from "../services";
-import { pickImage, uploadImage, deleteImage } from "../utilities";
+import { PhotoChoice } from "../interfaces";
+import { pickImage, takePhoto, uploadImage, deleteImage } from "../utilities";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const ProfileScreen = (props: any) => {
-  const { store, dispatch } = useContext(StoreContext);
   const scaleValue = new Animated.Value(0);
+  const { store, dispatch } = useContext(StoreContext);
+  const [modal, setModal] = useState(false);
   const [images, setImages] = useState<Array<any>>([]);
   const [showDelete, setShowDelete] = useState(false);
 
@@ -61,8 +68,20 @@ const ProfileScreen = (props: any) => {
     }
   };
 
-  const handleImageUpload = async () => {
-    const image = await pickImage();
+  const handleImageUpload = async (choice: PhotoChoice) => {
+    let image = null;
+    switch (choice) {
+      case "GALLERY":
+        console.log("here");
+        image = await pickImage();
+        break;
+      case "CAMERA":
+        image = await takePhoto();
+        break;
+      default:
+        break;
+    }
+
     if (image) {
       const response: any = await uploadImage(
         store.serverUrl + "/cloudinary/upload",
@@ -74,6 +93,9 @@ const ProfileScreen = (props: any) => {
         dispatch({ type: "SET_PICTURES", payload: response.pictures });
       }
     }
+
+    // Putting modal to false
+    setModal(false);
   };
 
   const showPhotos = () => {
@@ -135,7 +157,7 @@ const ProfileScreen = (props: any) => {
       } else {
         array.push(
           <View key={i} style={[styles.box, styles.emptyBox]}>
-            <TouchableOpacity onPress={handleImageUpload}>
+            <TouchableOpacity onPress={() => setModal(true)}>
               <Ionicons
                 name="md-add-circle"
                 size={24}
@@ -181,6 +203,16 @@ const ProfileScreen = (props: any) => {
           data={["Bleues", "Gris", "Marrons", "Noisettes", "Verts"]}
         /> */}
       </ScrollView>
+      <PhotoModal
+        show={modal}
+        onPress={(choice) => {
+          handleImageUpload(choice);
+        }}
+        // onPress={(choice: PhotoChoice) => {
+        //   handleImageUpload(choice);
+        //   setModal(false);
+        // }}
+      />
     </View>
   );
 };
