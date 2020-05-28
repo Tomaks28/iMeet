@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
+import React, { useContext, useEffect, useState, useRef, useMemo } from "react";
 import {
   View,
   StyleSheet,
@@ -12,8 +12,6 @@ import axios from "axios";
 import { Text } from "react-native-elements";
 import { themes } from "../themes";
 import { HeaderComponent } from "../components";
-import { getDiscoverProfiles } from "../services";
-import { StoreContext } from "../store";
 
 const { height, width } = Dimensions.get("window");
 
@@ -23,8 +21,6 @@ const DiscoverScreen = (props: any) => {
   const [swipeIndex, setSwipeIndex] = useState(0);
   // const [viewHeight, setViewHeight] = useState<number>(height);
   const position = useRef(new Animated.ValueXY()).current;
-
-  const { store, dispatch } = useContext(StoreContext);
 
   // Rotation animation
   const rotate = position.x.interpolate({
@@ -108,7 +104,7 @@ const DiscoverScreen = (props: any) => {
             return (
               <Animated.View
                 {...panResponder.panHandlers}
-                key={item.id}
+                key={item.id.value}
                 style={[
                   styles.animatedView,
                   {
@@ -132,7 +128,7 @@ const DiscoverScreen = (props: any) => {
                 <View style={styles.card}>
                   <Image
                     style={[styles.image]}
-                    source={{ uri: item.pictures[0].url }}
+                    source={{ uri: item.picture.large }}
                   />
                   <LinearGradient
                     colors={["rgba(0,0,0,0.1)", "black"]}
@@ -140,11 +136,11 @@ const DiscoverScreen = (props: any) => {
                   >
                     <View style={{ padding: 10 }}>
                       <View style={{ flexDirection: "row" }}>
-                        <Text style={styles.cardName}>{item.username},</Text>
-                        <Text style={styles.cardAge}>{item.age}</Text>
+                        <Text style={styles.cardName}>{item.name.first},</Text>
+                        <Text style={styles.cardAge}>{item.dob.age}</Text>
                       </View>
                       <Text style={styles.cardLocation}>
-                        {item.city}, {item.state}
+                        {item.location.city}, {item.location.state}
                       </Text>
                     </View>
                   </LinearGradient>
@@ -155,7 +151,7 @@ const DiscoverScreen = (props: any) => {
             // Below card
             return (
               <Animated.View
-                key={item.id}
+                key={item.id.value}
                 style={[
                   styles.animatedView,
                   {
@@ -167,7 +163,7 @@ const DiscoverScreen = (props: any) => {
                 <View style={styles.card}>
                   <Image
                     style={[styles.image]}
-                    source={{ uri: item.pictures[0].url }}
+                    source={{ uri: item.picture.large }}
                   />
                   <LinearGradient
                     colors={["rgba(0,0,0,0.1)", "black"]}
@@ -175,11 +171,11 @@ const DiscoverScreen = (props: any) => {
                   >
                     <View style={{ padding: 10 }}>
                       <View style={{ flexDirection: "row" }}>
-                        <Text style={styles.cardName}>{item.name},</Text>
-                        <Text style={styles.cardAge}>{item.age}</Text>
+                        <Text style={styles.cardName}>{item.name.first},</Text>
+                        <Text style={styles.cardAge}>{item.dob.age}</Text>
                       </View>
                       <Text style={styles.cardLocation}>
-                        {item.city}, {item.state}
+                        {item.location.city}, {item.location.state}
                       </Text>
                     </View>
                   </LinearGradient>
@@ -196,9 +192,11 @@ const DiscoverScreen = (props: any) => {
   useEffect(() => {
     if (!swipeIndex) {
       (async function () {
-        const { data } = await getDiscoverProfiles(store.token);
-        setData(data);
-        generateJsx(data);
+        const { data } = await axios.get(
+          "https://randomuser.me/api/?gender=female&nat=fr&results=5"
+        );
+        setData(data.results);
+        generateJsx(data.results);
       })();
     }
   }, []);

@@ -72,7 +72,6 @@ const ProfileScreen = (props: any) => {
     let image = null;
     switch (choice) {
       case "GALLERY":
-        console.log("here");
         image = await pickImage();
         break;
       case "CAMERA":

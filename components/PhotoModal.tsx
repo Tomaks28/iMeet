@@ -1,5 +1,11 @@
 import React from "react";
-import { Modal, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Modal,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableHighlight,
+} from "react-native";
 import { Text } from "react-native-elements";
 import { PhotoChoice } from "../interfaces";
 // import { themes } from "../themes";
@@ -12,19 +18,21 @@ interface Props {
 const PhotoModal = ({ show, onPress }: Props) => {
   return (
     <Modal transparent={true} visible={show} animationType="fade">
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <TouchableOpacity onPress={() => onPress("GALLERY")}>
-            <Text style={styles.buttonText}>Galerie</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => onPress("CAMERA")}>
-            <Text style={styles.buttonText}>Caméra</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => onPress("CANCEL")}>
-            <Text style={[styles.buttonText, { color: "red" }]}>Annuler</Text>
-          </TouchableOpacity>
+      <TouchableHighlight style={{ flex: 1 }} onPress={() => onPress("CANCEL")}>
+        <View style={styles.container}>
+          <View style={styles.content}>
+            <TouchableOpacity onPress={() => onPress("GALLERY")}>
+              <Text style={styles.buttonText}>Galerie</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onPress("CAMERA")}>
+              <Text style={styles.buttonText}>Caméra</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onPress("CANCEL")}>
+              <Text style={[styles.buttonText, { color: "red" }]}>Annuler</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </TouchableHighlight>
     </Modal>
   );
 };
@@ -36,7 +44,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     backgroundColor: "#222222aa",
-    padding: 50,
+    paddingHorizontal: 15,
+    paddingBottom: 50,
   },
   content: {
     backgroundColor: "#f4f4f4",
