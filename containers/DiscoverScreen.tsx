@@ -12,7 +12,7 @@ import axios from "axios";
 import { Text } from "react-native-elements";
 import { themes } from "../themes";
 import { HeaderComponent } from "../components";
-import { getDiscoverProfiles } from "../services";
+import { getDiscoverProfiles, sendReactionToProfil } from "../services";
 import { StoreContext } from "../store";
 
 const { height, width } = Dimensions.get("window");
@@ -21,7 +21,6 @@ const DiscoverScreen = (props: any) => {
   const [data, setData] = useState<any>();
   const [jsx, setJsx] = useState<any>([]);
   const [swipeIndex, setSwipeIndex] = useState(0);
-  // const [viewHeight, setViewHeight] = useState<number>(height);
   const position = useRef(new Animated.ValueXY()).current;
 
   const { store, dispatch } = useContext(StoreContext);
@@ -57,6 +56,14 @@ const DiscoverScreen = (props: any) => {
     extrapolate: "clamp",
   });
 
+  // Send user reaction to profile
+  const sendSwipeResult = async (index: number, reaction: boolean) => {
+    const response = await sendReactionToProfil(store.token, {
+      id: data[index].id,
+      reaction,
+    });
+  };
+
   // PanResponder
   const panResponder = useMemo(
     () =>
@@ -71,7 +78,7 @@ const DiscoverScreen = (props: any) => {
             Animated.spring(position, {
               toValue: { x: width + 100, y: gestureState.dy },
             }).start(() => {
-              console.log("right");
+              sendSwipeResult(swipeIndex, true);
               setSwipeIndex((prev: number) => prev + 1);
             });
           }
@@ -80,7 +87,7 @@ const DiscoverScreen = (props: any) => {
             Animated.spring(position, {
               toValue: { x: -width - 100, y: gestureState.dy },
             }).start(() => {
-              console.log("left");
+              sendSwipeResult(swipeIndex, false);
               setSwipeIndex((prev: number) => prev + 1);
             });
           }
@@ -93,7 +100,7 @@ const DiscoverScreen = (props: any) => {
           }
         },
       }),
-    []
+    [swipeIndex]
   );
 
   const generateJsx = (fetchData: any[]) => {
@@ -175,7 +182,7 @@ const DiscoverScreen = (props: any) => {
                   >
                     <View style={{ padding: 10 }}>
                       <View style={{ flexDirection: "row" }}>
-                        <Text style={styles.cardName}>{item.name},</Text>
+                        <Text style={styles.cardName}>{item.username},</Text>
                         <Text style={styles.cardAge}>{item.age}</Text>
                       </View>
                       <Text style={styles.cardLocation}>
@@ -206,10 +213,10 @@ const DiscoverScreen = (props: any) => {
   useEffect(() => {
     if (data) {
       generateJsx(data);
-      position.setValue({ x: 0, y: 0 });
       if (swipeIndex === data.length) {
         setSwipeIndex(0);
       }
+      position.setValue({ x: 0, y: 0 });
     }
   }, [swipeIndex]);
 
